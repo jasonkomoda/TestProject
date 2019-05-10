@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import constants from '../config/constants'
 import {
     ScrollView,
     Text,
@@ -24,8 +25,11 @@ export default class HomeScreen extends Component {
     }
 
     componentDidMount() {
-        fetch("https://jsonplaceholder.typicode.com/users")
-            .then(response => response.json())
+        fetch(`${constants.SERVER}:${constants.PORT}/users`)
+            .then(response => {
+                console.log(response);
+                response.json();   
+            })
             .then((responseJson) => {
                 this.setState({
                     loading: false,
@@ -47,9 +51,11 @@ export default class HomeScreen extends Component {
     }
     renderItem = (data) =>
         <TouchableOpacity style={styles.list}>
-            <Text style={styles.lightText}>{data.item.name}</Text>
-            <Text style={styles.lightText}>{data.item.email}</Text>
-            <Text style={styles.lightText}>{data.item.company.name}</Text></TouchableOpacity>
+            <Text style={styles.lightText}>{data.item.created_date}</Text>
+            <Text style={styles.lightText}>{data.item.username}</Text>
+            <Text style={styles.lightText}>{data.item.role}</Text>
+            <Text style={styles.lightText}>{data.item.status}</Text>
+        </TouchableOpacity>
 
     render() {
         const { navigate } = this.props.navigation
@@ -68,9 +74,8 @@ export default class HomeScreen extends Component {
                     data={this.state.dataSource}
                     ItemSeparatorComponent={this.FlatListItemSeparator}
                     renderItem={item => this.renderItem(item)}
-                    keyExtractor={item => item.id.toString()}
+                    keyExtractor={item => item._id.toString()}
                 />
-                <View style={{ margin: 20 }} />
                 <Button
                     onPress={() => navigate("Login", { screen: "Login" })}
                     title="Logout"
